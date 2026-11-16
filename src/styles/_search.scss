@@ -161,3 +161,33 @@
     color: var(--muted);
   }
 }
+
+.history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.875rem;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.history-label {
+  color: var(--muted);
+}
+
+.history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.history-item {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}

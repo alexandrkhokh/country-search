@@ -19,7 +19,10 @@ type SearchControllerOptions = {
 };
 
 export type SearchController = {
+  /** Search as the user types: debounced. */
   setQuery: (value: string) => void;
+  /** Search right now, without the debounce (e.g. a click on a history item). */
+  searchNow: (value: string) => void;
   retry: () => void;
   getState: () => SearchState;
 };
@@ -76,6 +79,11 @@ export default function createSearchController({
   };
 
   const runDebounced = debounce((query: string) => {
+    // the query was replaced by searchNow() while the timer was ticking
+    if (query !== lastQuery) {
+      return;
+    }
+
     void run(query);
   }, delay);
 
@@ -91,6 +99,11 @@ export default function createSearchController({
           : { status: "loading", query: lastQuery },
       );
       runDebounced(lastQuery);
+    },
+
+    searchNow(value: string): void {
+      lastQuery = value.trim();
+      void run(lastQuery);
     },
 
     retry(): void {
