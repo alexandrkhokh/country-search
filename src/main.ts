@@ -1,4 +1,5 @@
 import "./styles/main.scss";
+import createCachedSearch from "./search/createCachedSearch.ts";
 import createSearchController from "./search/createSearchController.ts";
 import showCountryDetails from "./ui/countryDetails.ts";
 import renderSearchResults from "./ui/searchResults.ts";
@@ -16,6 +17,7 @@ const input = createEl({
 const results = createEl({ className: "results", "aria-live": "polite" });
 
 const controller = createSearchController({
+  search: createCachedSearch(),
   onChange: (state) => {
     results.replaceChildren(
       renderSearchResults(state, {
