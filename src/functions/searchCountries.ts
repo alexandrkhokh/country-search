@@ -4,13 +4,21 @@ import mapCountryResponse from "./mapCountryResponse.ts";
 
 const API_URL = "https://countries.dev/name";
 const NOT_FOUND_STATUS = 404;
+export const REQUEST_TIMEOUT = 8000;
 
 export default async function searchCountries(
   query: string,
   signal: AbortSignal,
+  timeoutMs: number = REQUEST_TIMEOUT,
 ): Promise<Country[]> {
-  const response = await fetch(`${API_URL}/${encodeURIComponent(query)}`, {
+  // one signal for both sources: the caller aborts with AbortError,
+  // the timeout aborts with TimeoutError
+  const requestSignal = AbortSignal.any([
     signal,
+    AbortSignal.timeout(timeoutMs),
+  ]);
+  const response = await fetch(`${API_URL}/${encodeURIComponent(query)}`, {
+    signal: requestSignal,
   });
 
   // countries.dev answers 404 when nothing matches: an empty result, not an error
